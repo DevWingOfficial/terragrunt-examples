@@ -1,4 +1,4 @@
 locals {
   organization = "my-org"
-  project = "my-project"
+  project      = "my-project"
 }

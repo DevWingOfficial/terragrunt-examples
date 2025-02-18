@@ -1,17 +1,17 @@
 locals {
+  root_vars    = read_terragrunt_config(find_in_parent_folders("root.hcl")).locals
+  organization = local.root_vars.organization
+
   account_vars = read_terragrunt_config(find_in_parent_folders("account.hcl")).locals
   profile      = local.account_vars.profile
 
   environment_vars = read_terragrunt_config(find_in_parent_folders("environment.hcl")).locals
   environment      = local.environment_vars.environment
 
-  account_vars = read_terragrunt_config(find_in_parent_folders("account.hcl")).locals
-  profile      = local.account_vars.profile
-
   region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl")).locals
   region      = local.region_vars.region
 
-  datacenter = basename(get_terragrunt_dir())
+  datacenter = basename(dirname(find_in_parent_folders("datacenter.hcl")))
 }
 
 remote_state {
@@ -30,7 +30,7 @@ remote_state {
 }
 
 generate "provider" {
-  path      = "{local.datacenter}_provider.tf"
+  path      = "${local.datacenter}_provider.tf"
   if_exists = "overwrite_terragrunt"
   contents  = <<-EOF
 provider "aws" {
